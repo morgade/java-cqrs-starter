@@ -7,14 +7,20 @@ import org.morgade.cqrs.Event;
  *
  * @author x4rb
  */
-public class TabOpened extends Event {
+public class TabOpened implements Event {
+    public final UUID id;
     public final int tableNumber;
     public final String waiter;
 
     public TabOpened(UUID id, int tableNumber, String waiter) {
-        super(id);
+        this.id = id;
         this.tableNumber = tableNumber;
         this.waiter = waiter;
+    }
+
+    @Override
+    public UUID getId() {
+        return id;
     }
 
 }
