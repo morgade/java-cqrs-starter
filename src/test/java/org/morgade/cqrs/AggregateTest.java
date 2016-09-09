@@ -16,12 +16,12 @@ import org.junit.Before;
  * @author x4rb
  * @param <A>
  */
-public abstract class BDDTest<A extends Aggregate> {
+public abstract class AggregateTest<A extends Aggregate> {
 
     private final Class<A> sutClass;
     private A sut;
 
-    public BDDTest(Class<A> sutClass) {
+    public AggregateTest(Class<A> sutClass) {
         this.sutClass = sutClass;
     }
 
@@ -74,7 +74,7 @@ public abstract class BDDTest<A extends Aggregate> {
         };
     }
 
-    protected <C extends Command, A extends Aggregate> Function<A, Object> when(C command) {
+    protected <C extends Command, A extends CommandReceiver> Function<A, Object> when(C command) {
         return (agg) -> {
             try {
                 return agg.dispatch(command);
@@ -89,7 +89,7 @@ public abstract class BDDTest<A extends Aggregate> {
     }
 
     private A applyEvents(A agg, List<? extends Event> events) {
-        agg.dispatch(events);
+        events.forEach(e->agg.dispatch(e));
         return agg;
     }
 

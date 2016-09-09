@@ -11,14 +11,22 @@ import org.morgade.cqrs.Event;
 import org.morgade.cqrs.EventHandler;
 import org.morgade.tab.command.CloseTab;
 import org.morgade.tab.command.MarkDrinksServed;
+import org.morgade.tab.command.MarkFoodPrepared;
+import org.morgade.tab.command.MarkFoodServed;
 import org.morgade.tab.command.OpenTab;
 import org.morgade.tab.command.PlaceOrder;
 import org.morgade.tab.event.DrinksOrdered;
 import org.morgade.tab.event.DrinksServed;
 import org.morgade.tab.event.FoodOrdered;
+import org.morgade.tab.event.FoodPrepared;
+import org.morgade.tab.event.FoodServed;
 import org.morgade.tab.event.TabClosed;
 import org.morgade.tab.event.TabOpened;
 import org.morgade.tab.exception.DrinksNotOutstandingException;
+import org.morgade.tab.exception.FoodNotOutstandingException;
+import org.morgade.tab.exception.FoodNotPreparedException;
+import org.morgade.tab.exception.MustPayEnoughException;
+import org.morgade.tab.exception.TabHasUnservedItemsException;
 import org.morgade.tab.exception.TabNotOpenException;
 import org.morgade.tab.vo.OrderedItem;
 
@@ -74,6 +82,20 @@ public class Tab implements Aggregate {
     }
 
     /**
+     * MarkFoodPrepared command handler
+     * @param markFoodPrepared
+     * @return 
+     */
+    @CommandHandler
+    public List<? extends Event> handle(MarkFoodPrepared markFoodPrepared) {
+        if (!isFoodOutstanding(markFoodPrepared.menuNumbers)) {
+            throw new FoodNotOutstandingException();
+        }
+        
+        return asList(new FoodPrepared(markFoodPrepared.id, markFoodPrepared.menuNumbers));
+    }
+    
+    /**
      * MarkDrinksServed command handler
      * @param markDrinksServed
      * @return 
@@ -88,18 +110,40 @@ public class Tab implements Aggregate {
     }
 
     /**
+     * MarkFoodServed command handler
+     * @param markFoodServed
+     * @return 
+     */
+    @CommandHandler
+    public List<? extends Event> handle(MarkFoodServed markFoodServed) {
+        if (!isFoodPrepared(markFoodServed.menuNumbers)) {
+            throw new FoodNotPreparedException();
+        }
+        
+        return asList(new FoodPrepared(markFoodServed.id, markFoodServed.menuNumbers));
+    }
+
+    /**
      * CloseTab command handler
      * @param closeTab
      * @return 
      */
     @CommandHandler
     public List<? extends Event> handle(CloseTab closeTab) {
-        return asList(new TabClosed(
-                closeTab.id, 
-                closeTab.amountPaid, 
-                servedItemsValue, 
-                closeTab.amountPaid - servedItemsValue)
-        );
+        if (!open) {
+            throw new TabNotOpenException();
+        } else if (closeTab.amountPaid < servedItemsValue) {
+            throw new MustPayEnoughException();
+        } else if (!outstandingDrinks.isEmpty() || !outstandingFood.isEmpty() || !preparedFood.isEmpty()) {
+            throw new TabHasUnservedItemsException();
+        } else {
+            return asList(new TabClosed(
+                    closeTab.id, 
+                    closeTab.amountPaid, 
+                    servedItemsValue, 
+                    closeTab.amountPaid - servedItemsValue)
+            );
+        }
     }
 
     /**
@@ -121,6 +165,15 @@ public class Tab implements Aggregate {
     }
 
     /**
+     * FoodOrdered event handler
+     * @param foodOrdered 
+     */
+    @EventHandler
+    public void apply(FoodOrdered foodOrdered) {
+        outstandingFood.addAll(foodOrdered.items);
+    }
+
+    /**
      * DrinksServed event handler
      * @param drinksServed 
      */
@@ -131,15 +184,70 @@ public class Tab implements Aggregate {
                 .collect(toList());
         
         servedItemsValue += servedItems.stream()
-                                    .collect(summingDouble((oi)->oi.price));
-        outstandingDrinks.removeAll(servedItems);
+                                .collect(summingDouble((oi)->oi.price));
         
+        outstandingDrinks.removeAll(servedItems);
     }
 
+    /**
+     * FoodPrepared event handler
+     * @param foodPrepared 
+     */
+    @EventHandler
+    public void apply(FoodPrepared foodPrepared) {
+        foodPrepared.menuNumbers.forEach(n -> {
+            preparedFood.add(
+                outstandingFood.stream()
+                        .filter(item -> item.menuNumber == n)
+                        .findFirst().get()
+            );
+                    
+            outstandingFood.removeIf(item -> item.menuNumber == n);
+        });
+    }
+
+    /**
+     * FoodServed event handler
+     * @param foodServed 
+     */
+    @EventHandler
+    public void apply(FoodServed foodServed) {
+        List<OrderedItem> servedItems = outstandingFood.stream()
+                .filter( (oi) ->  foodServed.menuNumbers.contains(oi.menuNumber) )
+                .collect(toList());
+        
+        servedItemsValue += servedItems.stream()
+                                .collect(summingDouble((oi)->oi.price));
+        
+        outstandingFood.removeAll(servedItems);
+    }
+
+    /**
+     * TabClosed event handler
+     * @param tabClosed 
+     */
+    @EventHandler
+    public void apply(TabClosed tabClosed) {
+        open = false;
+    }
+    
+    
     private boolean isDrinksOutstanding(List<Integer> menuNumbers) {
         List<Integer> outstandingDrinksNumbers = outstandingDrinks.stream()
                 .map((oi) -> oi.menuNumber)
                 .collect(toList());
         return menuNumbers.stream().allMatch( (n) -> outstandingDrinksNumbers.contains(n) );
+    }
+    
+    private boolean isFoodOutstanding(List<Integer> menuNumbers) {
+        List<Integer> outstandingFoodNumbers = outstandingFood.stream()
+                .map((oi) -> oi.menuNumber)
+                .collect(toList());
+        return menuNumbers.stream().allMatch( (n) -> outstandingFoodNumbers.contains(n) );
+    }
+    
+    private boolean isFoodPrepared(List<Integer> menuNumbers) {
+        return preparedFood.stream()
+                .allMatch(f->menuNumbers.contains(f.menuNumber));
     }
 }

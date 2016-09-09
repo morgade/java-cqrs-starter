@@ -1,4 +1,4 @@
-package org.morgade.util;
+package org.morgade.cqrs;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -10,7 +10,7 @@ import org.apache.commons.lang3.reflect.MethodUtils;
  *
  * @author x4rb
  */
-public class ReflectionUtils {
+public class HandlerManager {
     /**
      * 
      * @param <T>
@@ -21,7 +21,7 @@ public class ReflectionUtils {
      * @param parameterClass
      * @return 
      */
-    public static <T, P> Method findSingleParameterAnnotatedMethod(T target, Class annotation, P parameter, Class<? extends P> parameterClass) {
+    public static <T, P> Method findHandler(T target, Class annotation, P parameter, Class<? extends P> parameterClass) {
         List<Method> methods = MethodUtils.getMethodsListWithAnnotation(target.getClass(), annotation);
         List<Method> matches = methods.stream()
                                       .filter((m) -> m.getParameterCount() == 1 &&
@@ -44,7 +44,7 @@ public class ReflectionUtils {
      * @param param
      * @return 
      */
-    public static <R> R invokeSingleParameterMethod(Method method, Object target, Object param) {
+    public static <R> R invokeHandler(Method method, Object target, Object param) {
         try {
             return (R) method.invoke(target, param);
         } catch (IllegalAccessException | IllegalArgumentException ex) {
