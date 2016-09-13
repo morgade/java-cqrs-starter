@@ -7,6 +7,6 @@ original C# sources can be found at
 https://github.com/edumentab/cqrs-starter-kit/
 
 It features the original "tab" domain aggregate, its commands and events 
-processors, projections and event store. It is packaged into a Spring Boot 
-Starter Web application with an AngularJS interface (a few conventional 
-support repositories are used in this interface).
+processors, read projections and event store. It's packaged into a Spring Boot 
+Starter Web application with an AngularJS/JSON interface and a few conventional 
+support repositories used by its controllers.
