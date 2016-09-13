@@ -5,7 +5,7 @@ import static java.util.Arrays.asList;
 import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
-import org.morgade.cqrs.AggregateService;
+import org.morgade.cqrs.AggregateServiceImpl;
 import org.morgade.cqrs.EventStore;
 import org.morgade.cqrs.store.DelegatingEventStore;
 import org.morgade.tab.command.MarkDrinksServed;
@@ -13,7 +13,7 @@ import org.morgade.tab.command.MarkFoodServed;
 import org.morgade.tab.command.OpenTab;
 import org.morgade.tab.command.PlaceOrder;
 import org.morgade.tab.domain.Tab;
-import org.morgade.tab.projection.chef.ChefTodoList;
+import org.morgade.tab.projection.chef.ChefTodoListImpl;
 import org.morgade.tab.vo.OrderedItem;
 
 /**
@@ -30,10 +30,10 @@ public class ServiceIntegrationTest {
         OrderedItem beer = new OrderedItem(2, "Beer", 2.0f, true);
         OrderedItem chips = new OrderedItem(3, "Chips", 1.5f, false);
         
-        ChefTodoList chefTodoList = new ChefTodoList();
+        ChefTodoListImpl chefTodoList = new ChefTodoListImpl();
         EventStore eventStore = new DelegatingEventStore(new InMemoryEventStore(), chefTodoList);
         
-        AggregateService<Tab> tabService = new AggregateService<>(eventStore, Tab.class);
+        AggregateServiceImpl<Tab> tabService = new AggregateServiceImpl<>(eventStore, Tab.class);
         tabService.handle(new OpenTab(tabId, tableNumber, waiter));
         tabService.handle(new PlaceOrder(tabId, asList(coke, beer, chips)));
         

@@ -19,18 +19,18 @@ import org.morgade.tab.event.FoodOrdered;
 import org.morgade.tab.event.FoodPrepared;
 import org.morgade.tab.event.FoodServed;
 import org.morgade.tab.event.TabOpened;
-import org.morgade.tab.projection.chef.ChefTodoList;
+import org.morgade.tab.projection.chef.ChefTodoListImpl;
 import org.morgade.tab.projection.chef.ChefTodoListGroup;
 import org.morgade.tab.projection.tabs.TabInvoice;
 import org.morgade.tab.projection.tabs.TabStatus;
-import org.morgade.tab.projection.tabs.Tabs;
+import org.morgade.tab.projection.tabs.TabsImpl;
 import org.morgade.tab.vo.OrderedItem;
 
 /**
  *
  * @author x4rb
  */
-public class ChefTodoListTest extends EventReceiverTest<ChefTodoList> {
+public class ChefTodoListTest extends EventReceiverTest<ChefTodoListImpl> {
     private UUID[] ids;
     private Integer[] tableNumbers;
     private String waiter;
@@ -40,7 +40,7 @@ public class ChefTodoListTest extends EventReceiverTest<ChefTodoList> {
     private OrderedItem food2;
     
     public ChefTodoListTest() {
-        super(ChefTodoList.class);
+        super(ChefTodoListImpl.class);
     }
     
     @Before
@@ -56,7 +56,7 @@ public class ChefTodoListTest extends EventReceiverTest<ChefTodoList> {
     
     @Test
     public void testTabIdForTable() {
-        ChefTodoList todo = given(
+        ChefTodoListImpl todo = given(
             new TabOpened(ids[0], tableNumbers[0], waiter),
             new TabOpened(ids[1], tableNumbers[0], waiter),
             new DrinksOrdered(ids[0], asList(drink1, drink2)),

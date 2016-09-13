@@ -20,14 +20,14 @@ import org.morgade.tab.event.FoodServed;
 import org.morgade.tab.event.TabOpened;
 import org.morgade.tab.projection.tabs.TabInvoice;
 import org.morgade.tab.projection.tabs.TabStatus;
-import org.morgade.tab.projection.tabs.Tabs;
+import org.morgade.tab.projection.tabs.TabsImpl;
 import org.morgade.tab.vo.OrderedItem;
 
 /**
  *
  * @author x4rb
  */
-public class TabsTest extends EventReceiverTest<Tabs> {
+public class TabsTest extends EventReceiverTest<TabsImpl> {
     private UUID[] ids;
     private Integer[] tableNumbers;
     private String waiter;
@@ -37,7 +37,7 @@ public class TabsTest extends EventReceiverTest<Tabs> {
     private OrderedItem food2;
     
     public TabsTest() {
-        super(Tabs.class);
+        super(TabsImpl.class);
     }
     
     @Before
@@ -53,7 +53,7 @@ public class TabsTest extends EventReceiverTest<Tabs> {
     
     @Test
     public void testTabIdForTable() {
-        Tabs tabs = given(
+        TabsImpl tabs = given(
             new TabOpened(ids[0], tableNumbers[0], waiter),
             new DrinksOrdered(ids[0], asList(drink1, drink2))
         );
@@ -63,7 +63,7 @@ public class TabsTest extends EventReceiverTest<Tabs> {
     
     @Test
     public void testActiveTableNumbers() {
-        Tabs tabs = given(
+        TabsImpl tabs = given(
             new TabOpened(ids[0], tableNumbers[0], waiter),
             new TabOpened(ids[1], tableNumbers[1], waiter),
             new DrinksOrdered(ids[0], asList(drink2)),
@@ -75,7 +75,7 @@ public class TabsTest extends EventReceiverTest<Tabs> {
     
     @Test
     public void testInvoiceForTable() {
-        Tabs tabs = given(
+        TabsImpl tabs = given(
             new TabOpened(ids[0], tableNumbers[0], waiter),
             new TabOpened(ids[1], tableNumbers[1], waiter),
             new DrinksOrdered(ids[0], asList(drink1)),
@@ -97,7 +97,7 @@ public class TabsTest extends EventReceiverTest<Tabs> {
         
     @Test
     public void testTabForTable() {
-        Tabs tabs = given(
+        TabsImpl tabs = given(
             new TabOpened(ids[0], tableNumbers[0], waiter),
             new DrinksOrdered(ids[0], asList(drink1, drink2)),
             new DrinksServed(ids[0], asList(drink1.menuNumber))

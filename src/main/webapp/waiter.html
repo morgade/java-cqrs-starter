@@ -1,0 +1,90 @@
+<div class="container" data-ng-show="!newTab">
+    <div class="pull-right">
+        <a class="btn btn-primary" data-ng-click="showNewTab()">Open New Tab</a>
+    </div>
+    <h3>Tab Status and Operations</h3>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <label>Table:</label>
+            <div class="input-group">
+                <select class="form-control" data-ng-model="tableNumber" data-ng-options="num for num in tableNumbers"></select>
+                <span class="input-group-btn">
+                    <a class="btn btn-primary" data-ng-click="close()" data-ng-disabled="!tableNumber">Close</a>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" data-ng-show="tableStatus">
+        <div class="col-md-12">
+            <label>Place order:</label>
+            <div class="input-group">
+                <select class="form-control" data-ng-model="menuItem" data-ng-options="m as m.description for m in menu"></select>
+                <span class="input-group-btn">
+                    <a class="btn btn-primary" data-ng-click="place()" data-ng-disabled="!menuItem">Place</a>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="row" data-ng-show="tableStatus">
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">To Serve</div>
+                <ul class="list-group">
+                    <li class="list-group-item" data-ng-repeat="oi in tableStatus.toServe">
+                        {{oi.description}}
+                        <span class="pull-right">
+                            <a class="btn btn-xs btn-success" data-ng-click="markServed(oi)">Served</a>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">Preparing</div>
+                <ul class="list-group">
+                    <li class="list-group-item" data-ng-repeat="oi in tableStatus.inPreparation">
+                        {{oi.description}}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">Served</div>
+                <ul class="list-group">
+                    <li class="list-group-item" data-ng-repeat="oi in tableStatus.served">
+                        {{oi.description}}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- open tab -->
+<div class="container" data-ng-show="newTab">
+    <h3>Open New Tab</h3>
+    <form class="row">
+        <div class="col-md-5">
+            <label>Table Number</label>
+            <select class="form-control" data-ng-model="tableNumber" data-ng-options="n for n in [1,2,3,4,5,6,7,8,9,10]"></select>
+        </div>
+        <div class="col-md-5">
+            <label>Waiter</label>
+            <select class="form-control" data-ng-model="waiter" data-ng-options="s for s in staff"></select>
+        </div>
+        <div class="col-md-2">
+            <label>Actions</label>
+            <div class="input-group">
+                <a class="btn btn-primary" data-ng-click="openTab()" data-ng-disabled="!tableNumber || !waiter">Open</a>
+            </div>
+        </div>
+    </form>
+</div>

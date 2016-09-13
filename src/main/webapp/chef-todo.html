@@ -1,0 +1,21 @@
+<!-- table status -->
+<div class="container">
+    <h3>Chef TODO List</h3>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default" data-ng-repeat="group in todoListGroups">
+                <div class="panel-heading">
+                    Group {{$index+1}}
+                </div>
+                <ul class="list-group" >
+                    <li class="list-group-item" data-ng-repeat="item in group.items">
+                        {{item.description}}
+                        <span class="pull-right">
+                            <a class="btn btn-xs btn-success" data-ng-click="markPrepared(group, item)">Prepared</a>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

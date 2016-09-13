@@ -120,7 +120,7 @@ public class Tab implements Aggregate {
             throw new FoodNotPreparedException();
         }
         
-        return asList(new FoodPrepared(markFoodServed.id, markFoodServed.menuNumbers));
+        return asList(new FoodServed(markFoodServed.id, markFoodServed.menuNumbers));
     }
 
     /**
@@ -212,14 +212,14 @@ public class Tab implements Aggregate {
      */
     @EventHandler
     public void apply(FoodServed foodServed) {
-        List<OrderedItem> servedItems = outstandingFood.stream()
+        List<OrderedItem> servedItems = preparedFood.stream()
                 .filter( (oi) ->  foodServed.menuNumbers.contains(oi.menuNumber) )
                 .collect(toList());
         
         servedItemsValue += servedItems.stream()
                                 .collect(summingDouble((oi)->oi.price));
         
-        outstandingFood.removeAll(servedItems);
+        preparedFood.removeAll(servedItems);
     }
 
     /**
@@ -247,7 +247,8 @@ public class Tab implements Aggregate {
     }
     
     private boolean isFoodPrepared(List<Integer> menuNumbers) {
-        return preparedFood.stream()
-                .allMatch(f->menuNumbers.contains(f.menuNumber));
+        return !preparedFood.isEmpty() 
+                && preparedFood.stream()
+                    .allMatch(f->menuNumbers.contains(f.menuNumber));
     }
 }
