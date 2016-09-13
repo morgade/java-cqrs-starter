@@ -10,7 +10,7 @@ import static java.util.stream.Collectors.toMap;
 import java.util.Optional;
 import java.util.function.Function;
 import org.morgade.cqrs.EventHandler;
-import org.morgade.cqrs.EventReceiver;
+import org.morgade.cqrs.EventSubscriber;
 import org.morgade.tab.event.DrinksOrdered;
 import org.morgade.tab.event.DrinksServed;
 import org.morgade.tab.event.FoodOrdered;
@@ -23,7 +23,7 @@ import org.morgade.tab.event.TabOpened;
  *
  * @author x4rb
  */
-public class TabsImpl implements EventReceiver, Tabs {
+public class TabsImpl implements EventSubscriber, Tabs {
 
     private final Map<UUID, Tab> todoByTab = new HashMap<>();
 
@@ -91,7 +91,7 @@ public class TabsImpl implements EventReceiver, Tabs {
                 t.getKey(), 
                 t.getValue().tableNumber,
                 t.getValue().served, 
-                t.getValue().served.stream().mapToDouble(i->i.price).sum(), 
+                (float)t.getValue().served.stream().mapToDouble(i->i.price).sum(), 
                 !t.getValue().inPreparation.isEmpty() || !t.getValue().toServe.isEmpty()
             )
         ).get();

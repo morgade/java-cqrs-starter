@@ -5,16 +5,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import org.morgade.cqrs.Event;
-import org.morgade.cqrs.EventReceiver;
+import org.morgade.cqrs.EventSubscriber;
 import org.morgade.cqrs.EventStore;
 import org.morgade.cqrs.EventStream;
 
 public class DelegatingEventStore implements EventStore {
 
     private final EventStore eventStore;
-    private final List<EventReceiver> listeners;
+    private final List<EventSubscriber> listeners;
 
-    public DelegatingEventStore(EventStore eventStore, EventReceiver ... listeners) {
+    public DelegatingEventStore(EventStore eventStore, EventSubscriber ... listeners) {
         this.eventStore = eventStore;
         this.listeners = Collections.unmodifiableList(Arrays.asList(listeners));
     }

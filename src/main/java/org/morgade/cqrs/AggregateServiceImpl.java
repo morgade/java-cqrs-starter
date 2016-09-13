@@ -34,8 +34,8 @@ public class AggregateServiceImpl<A extends Aggregate> implements AggregateServi
     }
     
     @Override
-    public <P extends EventReceiver> P load(Class<P> projectionClass, UUID id) {
-        final EventReceiver projection = instantiate(projectionClass);
+    public <P extends EventSubscriber> P load(Class<P> projectionClass, UUID id) {
+        final EventSubscriber projection = instantiate(projectionClass);
         final EventStream eventStream = eventStore.loadEventStream(id);
         projection.dispatch(eventStream);
         return (P) projection;

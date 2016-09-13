@@ -2,7 +2,7 @@ package org.morgade;
 
 import org.morgade.cqrs.AggregateService;
 import org.morgade.cqrs.AggregateServiceImpl;
-import org.morgade.cqrs.EventReceiver;
+import org.morgade.cqrs.EventSubscriber;
 import org.morgade.cqrs.EventStore;
 import org.morgade.cqrs.store.DelegatingEventStore;
 import org.morgade.cqrs.store.InMemoryEventStore;
@@ -39,8 +39,8 @@ public class Launcher {
     @Bean
     public EventStore getEventStore() {
         return new DelegatingEventStore(new InMemoryEventStore(),  
-            (EventReceiver)getTabs(),
-            (EventReceiver)getChefTodoList()
+            (EventSubscriber)getTabs(),
+            (EventSubscriber)getChefTodoList()
         );
     }
     

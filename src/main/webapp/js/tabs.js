@@ -15,5 +15,4 @@
          $routeProvider.otherwise({redirectTo: '/waiter'});
     }]);
     
-})
-(angular);
+})(angular);

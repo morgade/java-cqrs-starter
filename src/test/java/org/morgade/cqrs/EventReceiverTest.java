@@ -10,7 +10,7 @@ import org.junit.Before;
  * @author x4rb
  * @param <R>
  */
-public abstract class EventReceiverTest<R extends EventReceiver> {
+public abstract class EventReceiverTest<R extends EventSubscriber> {
     private final Class<R> projectionClass;
     private R instance;
 

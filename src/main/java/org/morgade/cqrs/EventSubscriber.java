@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
  *
  * @author x4rb
  */
-public interface EventReceiver {
+public interface EventSubscriber {
     
     default void dispatch(Event event) {
         Method method = HandlerManager.findHandler(this, EventHandler.class, event, event.getClass());

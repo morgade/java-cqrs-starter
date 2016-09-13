@@ -8,5 +8,5 @@ import java.util.UUID;
  */
 public interface AggregateService {
     void handle(Command command);
-    <P extends EventReceiver> P load(Class<P> projectionClass, UUID id);
+    <P extends EventSubscriber> P load(Class<P> projectionClass, UUID id);
 }

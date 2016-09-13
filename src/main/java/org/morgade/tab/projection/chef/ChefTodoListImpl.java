@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import static java.util.stream.Collectors.toList;
 import org.morgade.cqrs.EventHandler;
-import org.morgade.cqrs.EventReceiver;
+import org.morgade.cqrs.EventSubscriber;
 import org.morgade.tab.event.FoodOrdered;
 import org.morgade.tab.event.FoodPrepared;
 
@@ -15,7 +15,7 @@ import org.morgade.tab.event.FoodPrepared;
  *
  * @author x4rb
  */
-public class ChefTodoListImpl implements EventReceiver, ChefTodoList {
+public class ChefTodoListImpl implements EventSubscriber, ChefTodoList {
     private final List<ChefTodoListGroup> todoList = new LinkedList<>();
 
     /**

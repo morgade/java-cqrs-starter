@@ -13,10 +13,10 @@ public class TabInvoice {
     public final UUID tabId;
     public final int tableNumber;
     public final List<TabItem> items;
-    public final double total;
+    public final float total;
     public final boolean hasUnservedItems;
 
-    public TabInvoice(UUID tabId, int tableNumber, List<TabItem> items, double total, boolean hasUnservedItems) {
+    public TabInvoice(UUID tabId, int tableNumber, List<TabItem> items, float total, boolean hasUnservedItems) {
         this.tabId = tabId;
         this.tableNumber = tableNumber;
         this.items = unmodifiableList(new ArrayList(items));

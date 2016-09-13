@@ -26,6 +26,7 @@ import org.morgade.tab.exception.DrinksNotOutstandingException;
 import org.morgade.tab.exception.FoodNotOutstandingException;
 import org.morgade.tab.exception.FoodNotPreparedException;
 import org.morgade.tab.exception.MustPayEnoughException;
+import org.morgade.tab.exception.TabAlreadyOpenException;
 import org.morgade.tab.exception.TabHasUnservedItemsException;
 import org.morgade.tab.exception.TabNotOpenException;
 import org.morgade.tab.vo.OrderedItem;
@@ -49,6 +50,9 @@ public class Tab implements Aggregate {
      */
     @CommandHandler
     public List<? extends Event> handle(OpenTab openTab) {
+        if (open) {
+            throw new TabAlreadyOpenException();
+        }
         return asList(
                 new TabOpened(openTab.id, openTab.tableNumber, openTab.waiter)
         );

@@ -18,6 +18,7 @@ import org.morgade.tab.event.TabClosed;
 import org.morgade.tab.event.TabOpened;
 import org.morgade.tab.exception.DrinksNotOutstandingException;
 import org.morgade.tab.exception.MustPayEnoughException;
+import org.morgade.tab.exception.TabAlreadyOpenException;
 import org.morgade.tab.exception.TabHasUnservedItemsException;
 import org.morgade.tab.exception.TabNotOpenException;
 import org.morgade.tab.vo.OrderedItem;
@@ -57,6 +58,15 @@ public class TabTest extends AggregateTest<Tab> {
             given(),
             when(new OpenTab(testId, testTable, testWaiter)),
             then(new TabOpened(testId, testTable, testWaiter))
+        );
+    }
+
+    @Test
+    public void canNotOpenTabAlreadyOpenTest() {
+        test(
+            given(new TabOpened(testId, testTable, testWaiter)),
+            when(new OpenTab(testId, testTable, testWaiter)),
+            thenFailWith(TabAlreadyOpenException.class)
         );
     }
 
