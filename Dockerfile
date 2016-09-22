@@ -13,6 +13,6 @@ WORKDIR /app
 
 EXPOSE 8080
 
-COPY cqrs-starter-1.0.jar /app/cqrs-starter-1.0.jar
+COPY target/cqrs-starter-1.0.jar /app/cqrs-starter-1.0.jar
 
 CMD ["/bin/sh", "-c", "java -jar /app/cqrs-starter-1.0.jar"]

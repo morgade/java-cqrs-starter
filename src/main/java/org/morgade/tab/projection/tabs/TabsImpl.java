@@ -76,7 +76,7 @@ public class TabsImpl implements EventSubscriber, Tabs {
                     )
                 )
                 .findFirst()
-                .get();
+                .orElse(null);
         }
     }
     
